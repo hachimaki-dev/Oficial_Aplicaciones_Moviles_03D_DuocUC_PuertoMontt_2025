@@ -1,36 +1,6 @@
 package com.otakuwear
 
-/**
- * Clase que representa una prenda de vestir en nuestro sistema.
- *
- * @param nombre Nombre de la prenda (ej: "Camiseta de Naruto")
- * @param precio Precio en dólares (debe ser positivo)
- * @param stock Cantidad disponible (no puede ser negativo)
- */
-data class Prenda(
-    val nombre: String,
-    val precio: Double,
-    val stock: Int
-) {
-
-    /**
-     * Valida que los datos de la prenda sean correctos según reglas de negocio
-     * @return true si todos los datos son válidos, false en caso contrario
-     */
-    fun validar(): Boolean {
-        return precio > 0 && stock >= 0 && nombre.isNotBlank()
-    }
-
-    /**
-     * Formatea la información de la prenda para mostrar al usuario
-     * @return String con formato "Nombre - Precio: $XX.XX - Stock: XX unidades"
-     */
-    fun mostrarInfo(): String {
-        return "$nombre - Precio: $${precio} - Stock: ${stock} unidades"
-    }
-
-
-}
+import com.otakuwear.models.Prenda
 
 
 /**
