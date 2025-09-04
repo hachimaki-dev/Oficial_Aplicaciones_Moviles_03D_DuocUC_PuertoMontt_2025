@@ -1,44 +1,24 @@
 package com.otakuwear
 
-/**
- * Clase que representa una prenda de vestir en nuestro sistema.
- *
- * @param nombre Nombre de la prenda (ej: "Camiseta de Naruto")
- * @param precio Precio en dólares (debe ser positivo)
- * @param stock Cantidad disponible (no puede ser negativo)
- */
+
 data class Prenda(
     val nombre: String,
     val precio: Double,
     val stock: Int
 ) {
 
-    /**
-     * Valida que los datos de la prenda sean correctos según reglas de negocio
-     * @return true si todos los datos son válidos, false en caso contrario
-     */
     fun validar(): Boolean {
         return precio > 0 && stock >= 0 && nombre.isNotBlank()
     }
 
-    /**
-     * Formatea la información de la prenda para mostrar al usuario
-     * @return String con formato "Nombre - Precio: $XX.XX - Stock: XX unidades"
-     */
+
     fun mostrarInfo(): String {
         return "$nombre - Precio: $${precio} - Stock: ${stock} unidades"
     }
 
-
 }
 
-
-/**
- * Almacén global de todas las prendas del sistema.
- * Usamos MutableList para permitir agregar/quitar prendas dinámicamente.
- */
 val almacenPrendas = mutableListOf<Prenda>()
-
 /**
  * Muestra el menú principal de opciones al usuario
  */
@@ -54,61 +34,58 @@ fun mostrarMenu() {
     println("-".repeat(40))
     print("Selecciona una opción [1-5]: ")
 }
+    /**
+     * Registra una nueva prenda en el sistema con validación completa
+     */
+    fun registrarPrenda() {
+        println("\n--- REGISTRO DE NUEVA PRENDA ---")
 
+        try {
+            // Captura del nombre con validación
+            print("Nombre de la prenda: ")
+            val nombre = readLine()?.trim() ?: ""
 
-/**
- * Registra una nueva prenda en el sistema con validación completa
- */
-fun registrarPrenda() {
-    println("\n--- REGISTRO DE NUEVA PRENDA ---")
+            if (nombre.isBlank()) {
+                println("[ERROR] El nombre es obligatorio")
+                return
+            }
 
-    try {
-        // Captura del nombre con validación
-        print("Nombre de la prenda: ")
-        val nombre = readLine()?.trim() ?: ""
+            // Captura del precio con validación numérica
+            print("Precio en dólares: $")
+            val precioTexto = readLine()?.trim() ?: "0"
+            val precio = precioTexto.toDoubleOrNull()
 
-        if (nombre.isBlank()) {
-            println("[ERROR] El nombre es obligatorio")
-            return
+            if (precio == null || precio <= 0) {
+                println("[ERROR] El precio debe ser un número positivo")
+                return
+            }
+
+            // Captura del stock con validación numérica
+            print("Cantidad en stock: ")
+            val stockTexto = readLine()?.trim() ?: "0"
+            val stock = stockTexto.toIntOrNull()
+
+            if (stock == null || stock < 0) {
+                println("[ERROR] El stock debe ser un número no negativo")
+                return
+            }
+
+            // Crear y validar la prenda
+            val nuevaPrenda = Prenda(nombre, precio, stock)
+
+            if (nuevaPrenda.validar()) {
+                almacenPrendas.add(nuevaPrenda)
+                println("\n[ÉXITO] Prenda registrada:")
+                println("-> ${nuevaPrenda.mostrarInfo()}")
+            } else {
+                println("[ERROR] Los datos de la prenda no son válidos")
+            }
+
+        } catch (excepcion: Exception) {
+            println("[ERROR INESPERADO] ${excepcion.message}")
+            println("Por favor, intenta nuevamente")
         }
-
-        // Captura del precio con validación numérica
-        print("Precio en dólares: $")
-        val precioTexto = readLine()?.trim() ?: "0"
-        val precio = precioTexto.toDoubleOrNull()
-
-        if (precio == null || precio <= 0) {
-            println("[ERROR] El precio debe ser un número positivo")
-            return
-        }
-
-        // Captura del stock con validación numérica
-        print("Cantidad en stock: ")
-        val stockTexto = readLine()?.trim() ?: "0"
-        val stock = stockTexto.toIntOrNull()
-
-        if (stock == null || stock < 0) {
-            println("[ERROR] El stock debe ser un número no negativo")
-            return
-        }
-
-        // Crear y validar la prenda
-        val nuevaPrenda = Prenda(nombre, precio, stock)
-
-        if (nuevaPrenda.validar()) {
-            almacenPrendas.add(nuevaPrenda)
-            println("\n[ÉXITO] Prenda registrada:")
-            println("-> ${nuevaPrenda.mostrarInfo()}")
-        } else {
-            println("[ERROR] Los datos de la prenda no son válidos")
-        }
-
-    } catch (excepcion: Exception) {
-        println("[ERROR INESPERADO] ${excepcion.message}")
-        println("Por favor, intenta nuevamente")
     }
-}
-
 /**
  * Muestra todas las prendas registradas en el sistema
  */
@@ -158,7 +135,6 @@ fun mostrarPrendasPremium() {
         }
 }
 
-
 /**
  * Calcula métricas financieras del inventario
  * Demuestra operaciones agregadas avanzadas
@@ -196,7 +172,6 @@ fun calcularMetricasInventario() {
     println("Prenda más cara: ${prendaMasCara?.mostrarInfo() ?: "N/A"}")
     println("Prenda más barata: ${prendaMasBarata?.mostrarInfo() ?: "N/A"}")
 }
-
 
 /**
  * Función principal que controla el flujo del programa
