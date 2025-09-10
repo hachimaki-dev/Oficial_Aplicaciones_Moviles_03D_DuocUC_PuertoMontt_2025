@@ -76,14 +76,46 @@ fun main(){
 
         println("-".repeat(50))
         println("Seleccione una opción")
-        var opcionCompra = readLine()?.toInt()
-        if (opcionCompra != null || opcionCompra <= 0) {
+        var opcionCompra = readLine()?.toIntOrNull()
+        if (opcionCompra == null || opcionCompra <= 0 || opcionCompra > Viajes.size) {
             println("Tiene que ser una opción válida")
             return
         }
 
-        Viajes[opcionCompra].mostrarInfo()
+        var viajeSeleccionado = Viajes[opcionCompra-1]
+        println("Viaje a ${viajeSeleccionado.destino} seleccionado\nIngrese cantidad de pasajes")
+        var cantPasajes = readLine()?.toIntOrNull() ?: 0
 
+        viajeSeleccionado.compraViaje(cantPasajes)
+
+    }
+
+    fun calcularMetricas(){
+        var cantVendidos = 0
+        var sumaValores = 0
+        var promedioValores = 0.0
+        var pasajesRestantes = 0
+        println("---- MÉTRICAS ----")
+        Viajes.forEachIndexed { indice, viaje ->
+            cantVendidos += viaje.pasajesIniciales
+            sumaValores += viaje.pasajesIniciales * viaje.precio
+            promedioValores += viaje.precio / Viajes.size
+        }
+
+        println("Pasajes vendidos totales: $cantVendidos")
+        if(sumaValores == 0){
+            println("Total dinero recaudado: No se han vendido pasajes aún")
+        }else{
+            println("Total dinero recaudado: $${sumaValores}")
+        }
+        println("Promedio de precios: ${promedioValores}")
+
+        Viajes.forEachIndexed { indice, viaje ->
+            val numero = indice + 1
+            println("$numero. ${viaje.mostrarInfo()}")
+            pasajesRestantes = viaje.pasajesDisponibles - viaje.pasajesIniciales
+            println("Pasajes restantes: ${pasajesRestantes}")
+        }
     }
 
 
@@ -102,7 +134,7 @@ fun main(){
             """
 
         )
-
+        print("Selecciona una opción -> ")
         var opcion = readLine()?.toInt()
         when (opcion) {
             1 -> {
@@ -113,6 +145,12 @@ fun main(){
             }
             3 -> {
                 comprarViaje()
+            }
+            4 ->{
+                calcularMetricas()
+            }
+            5 ->{
+                return
             }
         }
 

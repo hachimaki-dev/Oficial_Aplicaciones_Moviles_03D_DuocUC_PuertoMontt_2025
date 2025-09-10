@@ -9,4 +9,15 @@ data class Viaje(
     fun mostrarInfo(): String {
         return "$destino - Precio: $${precio} - Pasajes Disponibles: ${pasajesDisponibles} - Pasajes vendidos: ${pasajesIniciales}"
     }
+
+    fun compraViaje(cantidad: Int){
+        if (cantidad < pasajesDisponibles){
+            pasajesDisponibles -= cantidad
+            pasajesIniciales += cantidad
+        }else{
+            println("No hay suficientes pasajes disponibles")
+            return
+        }
+        println("Pasajes comprado")
+    }
 }
