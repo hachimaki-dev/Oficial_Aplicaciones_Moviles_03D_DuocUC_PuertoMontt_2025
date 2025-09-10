@@ -3,16 +3,16 @@ import org.example.com.otakuwear.Model.Viaje;
 class GestorViajes {
     private val viajes = mutableListOf<Viaje>()
 
-    fun addViaje(viaje: Viaje): Boolean {
+    fun addViaje(nuevoviaje: Viaje): Boolean {
         return try {
             println("Agrega destino")
-            var Ndestino:String= readln().toString()
+            val Ndestino:String= readln().toString()
             println("Agrega precio")
-            var Nprecio:Int=readln().toInt()
+            val Nprecio:Int=readln().toInt()
             println("Agrega numero de pasajeros")
-            var Npasajero:Int=readln().toInt()
-            val viaje=Viaje(Ndestino,Nprecio,Npasajero)
-            viajes.add(viaje)
+            val Npasajero:Int=readln().toInt()
+            val nuevoviaje=Viaje(Ndestino,Nprecio,Npasajero)
+            viajes.add(nuevoviaje)
             println("Viaje agregado")
             true
         }catch (e:Exception){
