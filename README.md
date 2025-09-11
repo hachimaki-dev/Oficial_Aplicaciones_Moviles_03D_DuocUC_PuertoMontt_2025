@@ -152,3 +152,301 @@ val masBarata = inventario.minByOrNull { it.precioPorKilo }
 - **Manejo de Excepciones**: `try-catch` para entrada de usuario
 - **Colecciones**: Operaciones avanzadas sobre listas
 
+---
+
+## 📚 ANEXO: Guía de Referencia Rápida de Kotlin
+
+> **Nota:** Esta sección es material adicional para tu aprendizaje y referencia. Te ayudará no solo en la prueba, sino también para ir más allá y convertirte en un mejor programador Kotlin. ¡Explora, experimenta y diviértete programando!
+
+### 🔢 Tipos de Datos Primitivos y sus Métodos
+
+| Tipo | Métodos Útiles | Descripción | Ejemplo de Uso |
+|------|----------------|-------------|----------------|
+| **String** | `.isBlank()` | Verifica si está vacío o solo espacios | `if (nombre.isBlank()) { error }` |
+| | `.trim()` | Elimina espacios al inicio y final | `val limpio = input.trim()` |
+| | `.lowercase()` | Convierte a minúsculas | `if (respuesta.lowercase() == "si")` |
+| | `.contains()` | Busca texto dentro del string | `if (fruta.contains("manzana"))` |
+| | `.repeat()` | Repite el string n veces | `"*".repeat(50) // Línea decorativa` |
+| **Double** | `.toInt()` | Convierte a entero (puede perder precisión) | `val entero = 3.7.toInt() // 3` |
+| | `String.format()` | Formatea con decimales | `"%.2f".format(precio) // "12.50"` |
+| **Int** | `.toDouble()` | Convierte a decimal | `val decimal = stock.toDouble()` |
+| | `..` (rangos) | Crea rangos de números | `for (i in 1..5) { println(i) }` |
+
+```kotlin
+// 💡 Tip: Conversiones seguras
+val userInput = "123.45abc"
+val precio = userInput.toDoubleOrNull() ?: 0.0 // Devuelve 0.0 si falla
+val stock = "10x".toIntOrNull() ?: -1 // Devuelve -1 si falla
+
+// 💡 Curiosidad: String templates
+val mensaje = "La $fruta cuesta ${precio} por kilo"
+val calculo = "Total: ${precio * cantidad}" // Expresiones complejas
+```
+
+### 📋 Colecciones: Tu Superpoder en Kotlin
+
+| Tipo de Colección | Cuándo Usar | Métodos Clave | Casos de Uso |
+|-------------------|-------------|---------------|--------------|
+| **List** (inmutable) | Datos que no cambiarán | `.size`, `.get()`, `.contains()` | Menús fijos, configuraciones |
+| **MutableList** | Datos que necesitas modificar | `.add()`, `.remove()`, `.clear()` | Inventarios, carritos de compra |
+| **Map** | Asociar clave-valor | `.get()`, `.put()`, `.keys`, `.values` | Precios por producto, usuarios-contraseñas |
+
+```kotlin
+// 🚀 Funciones de Orden Superior: ¡El poder real de Kotlin!
+
+val frutas = listOf(
+    Fruta("Manzana", 1200.0, 50),
+    Fruta("Banana", 800.0, 30),
+    Fruta("Mango", 2500.0, 20)
+)
+
+// FILTER: Filtrar elementos que cumplan una condición
+val frutasCaras = frutas.filter { it.precio > 1000 }
+val frutasConStock = frutas.filter { it.stock > 0 }
+val frutasNombreCorto = frutas.filter { it.nombre.length <= 6 }
+
+// MAP: Transformar cada elemento
+val soloNombres = frutas.map { it.nombre }
+val preciosConDescuento = frutas.map { it.precio * 0.9 }
+val infoCompleta = frutas.map { "${it.nombre}: ${it.precio}" }
+
+// SUMAR Y AGREGACIONES: Calcular valores
+val valorTotal = frutas.sumOf { it.precio * it.stock }
+val stockTotal = frutas.sumOf { it.stock }
+val precioPromedio = frutas.map { it.precio }.average()
+
+// ENCONTRAR EXTREMOS: Máximos y mínimos
+val masCara = frutas.maxByOrNull { it.precio }
+val masBarata = frutas.minByOrNull { it.precio }
+val mayorStock = frutas.maxByOrNull { it.stock }
+
+// ORDENAMIENTO: Organizar datos
+val porPrecio = frutas.sortedBy { it.precio }          // Ascendente
+val porPrecioDesc = frutas.sortedByDescending { it.precio } // Descendente
+val alfabetico = frutas.sortedBy { it.nombre }
+
+// 💎 Encadenamiento: ¡Combina operaciones!
+val resultado = frutas
+    .filter { it.stock > 10 }           // Solo con stock suficiente
+    .sortedByDescending { it.precio }   // Ordenar por precio
+    .take(3)                            // Solo los 3 primeros
+    .map { "${it.nombre}: ${it.precio}" } // Formatear
+
+// ITERACIÓN: Recorrer elementos
+frutas.forEach { println(it.nombre) }
+frutas.forEachIndexed { index, fruta -> 
+    println("${index + 1}. ${fruta.nombre}")
+}
+```
+
+### 🛡️ Null Safety: Tu Escudo Protector
+
+| Operador | Significado | Cuándo Usar | Ejemplo |
+|----------|-------------|-------------|---------|
+| `?` | Tipo nullable | Variable puede ser null | `var nombre: String? = null` |
+| `?.` | Safe call | Evita NullPointerException | `nombre?.uppercase()` |
+| `?:` | Elvis operator | Valor por defecto si es null | `nombre ?: "Sin nombre"` |
+| `!!` | Not-null assertion | Estás 100% seguro que no es null | `nombre!!.uppercase()` ⚠️ |
+
+```kotlin
+// 🔒 Null Safety en acción
+fun procesarFruta(nombre: String?) {
+    // ❌ Peligroso: puede explotar si nombre es null
+    // println(nombre.uppercase())
+    
+    // ✅ Seguro: solo se ejecuta si no es null
+    println(nombre?.uppercase())
+    
+    // ✅ Con valor por defecto
+    val nombreSeguro = nombre ?: "Fruta desconocida"
+    
+    // ✅ Verificación manual
+    if (nombre != null) {
+        println(nombre.uppercase()) // Aquí Kotlin sabe que no es null
+    }
+}
+```
+
+### 🎯 Manejo de Excepciones: Preparado para Todo
+
+```kotlin
+// 📊 Patrón de validación robusto
+fun registrarFruta() {
+    try {
+        print("Nombre: ")
+        val nombre = readLine()?.trim()
+        
+        // Validación en cascada
+        if (nombre.isNullOrBlank()) {
+            throw IllegalArgumentException("Nombre no puede estar vacío")
+        }
+        
+        print("Precio: ")
+        val precioTexto = readLine()?.trim() ?: ""
+        val precio = precioTexto.toDoubleOrNull() 
+            ?: throw NumberFormatException("Precio inválido: '$precioTexto'")
+        
+        if (precio <= 0) {
+            throw IllegalArgumentException("Precio debe ser positivo")
+        }
+        
+        print("Stock: ")
+        val stockTexto = readLine()?.trim() ?: ""
+        val stock = stockTexto.toIntOrNull()
+            ?: throw NumberFormatException("Stock inválido: '$stockTexto'")
+        
+        if (stock < 0) {
+            throw IllegalArgumentException("Stock no puede ser negativo")
+        }
+        
+        // Si llegamos aquí, todos los datos son válidos
+        val fruta = Fruta(nombre, precio, stock)
+        println("✅ Fruta registrada exitosamente")
+        
+    } catch (e: NumberFormatException) {
+        println("❌ Error de formato: ${e.message}")
+    } catch (e: IllegalArgumentException) {
+        println("❌ Error de validación: ${e.message}")
+    } catch (e: Exception) {
+        println("❌ Error inesperado: ${e.message}")
+    }
+}
+```
+
+### 🏗️ Herencia y Polimorfismo: Código Inteligente
+
+```kotlin
+// 🎭 Polimorfismo en acción
+abstract class Fruta(
+    val nombre: String,
+    val precio: Double,
+    val stock: Int
+) {
+    // Método común para todas las frutas
+    open fun mostrarInfo() = "$nombre - ${precio} (${stock} unidades)"
+    
+    // Método que cada subclase debe implementar
+    abstract fun descripcion(): String
+    
+    // Método que puede ser sobrescrito opcionalmente
+    open fun tiempoVida(): String = "Variable según condiciones"
+}
+
+class FrutaLocal(nombre: String, precio: Double, stock: Int) 
+    : Fruta(nombre, precio, stock) {
+    
+    override fun descripcion() = "🍎 Fruta local: $nombre - Fresca de la región"
+    override fun tiempoVida() = "3-7 días refrigerada"
+    
+    // Método específico de frutas locales
+    fun zonaProduccion() = "Región de Los Lagos"
+}
+
+class FrutaTropical(nombre: String, precio: Double, stock: Int) 
+    : Fruta(nombre, precio, stock) {
+    
+    override fun descripcion() = "🥭 Fruta tropical: $nombre - Importada"
+    override fun tiempoVida() = "5-14 días según madurez"
+    
+    // Método específico de frutas tropicales
+    fun paisOrigen() = "Países tropicales"
+}
+
+// 🎪 Usando polimorfismo
+val inventario = mutableListOf<Fruta>()
+inventario.add(FrutaLocal("Manzana", 1200.0, 50))
+inventario.add(FrutaTropical("Mango", 2500.0, 20))
+
+// ¡Cada fruta responde diferente al mismo método!
+inventario.forEach { fruta ->
+    println(fruta.descripcion()) // Comportamiento polimórfico
+    println("Duración: ${fruta.tiempoVida()}")
+}
+```
+
+### 🎛️ Estructuras de Control Avanzadas
+
+```kotlin
+// 🔄 WHEN: El switch de Kotlin con superpoderes
+fun procesarOpcion(opcion: String) {
+    when (opcion.trim()) {
+        "1", "registrar" -> registrarFruta()
+        "2", "mostrar", "ver" -> mostrarInventario()
+        "3", "filtrar" -> filtrarFrutas()
+        "4", "calcular" -> calcularMetricas()
+        "5", "salir", "exit", "q" -> salirPrograma()
+        else -> {
+            println("❌ Opción desconocida: '$opcion'")
+            println("💡 Opciones válidas: 1-5, o palabras como 'mostrar', 'salir'")
+        }
+    }
+}
+
+// 🔄 When con condiciones
+fun categorizarPrecio(precio: Double) = when {
+    precio < 500 -> "💰 Económica"
+    precio < 1500 -> "💵 Normal"
+    precio < 3000 -> "💸 Premium"
+    else -> "💎 Lujo"
+}
+
+// 🔄 Loops con estilo
+fun mostrarMenuAnimado() {
+    val opciones = listOf(
+        "Registrar fruta",
+        "Ver inventario", 
+        "Filtrar frutas caras",
+        "Calcular métricas",
+        "Salir"
+    )
+    
+    opciones.forEachIndexed { index, opcion ->
+        println("${index + 1}. $opcion")
+        Thread.sleep(100) // Animación simple 😎
+    }
+}
+```
+
+### 💡 Tips Pro y Curiosidades
+
+#### 🚀 Funciones de Extensión: Superpoderes Personalizados
+```kotlin
+// Extiende tipos existentes con nuevas funcionalidades
+fun Double.formatearMoneda(): String = "${String.format("%.2f", this)}"
+fun String.esPrecioValido(): Boolean = this.toDoubleOrNull()?.let { it > 0 } ?: false
+
+// Uso
+val precio = 1234.5
+println(precio.formatearMoneda()) // "$1234.50"
+println("abc".esPrecioValido())   // false
+println("123.45".esPrecioValido()) // true
+```
+
+#### 🎨 Data Classes: Clases con Superpoderes
+```kotlin
+data class Fruta(val nombre: String, val precio: Double, val stock: Int) {
+    // ¡Kotlin genera automáticamente!
+    // - toString() elegante
+    // - equals() y hashCode()
+    // - copy() para duplicar con cambios
+}
+
+val manzana = Fruta("Manzana", 1200.0, 50)
+val manzanaDescuento = manzana.copy(precio = 1000.0) // Nuevo objeto con precio diferente
+println(manzana) // Fruta(nombre=Manzana, precio=1200.0, stock=50)
+```
+
+#### 🔧 Scope Functions: Let, Apply, Run, With
+```kotlin
+// LET: Útil para null safety y transformaciones
+val resultado = nombre?.let { nombreValido ->
+    if (nombreValido.length > 3) "Nombre válido: $nombreValido"
+    else "Nombre muy corto"
+}
+
+// APPLY: Configura objetos
+val fruta = Fruta("", 0.0, 0).apply {
+    // En versiones mutables, podrías configurar aquí
+    println("Configurando fruta...")
+}
+```
