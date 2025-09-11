@@ -12,7 +12,7 @@ fun main() {
 
     // Bucle principal del programa
     while (sistemaActivo) {
-        mostrarMenu()
+        mostrarMenucito()
 
         // Captura de opción con validación
         val opcionTexto = readLine()?.trim() ?: ""
@@ -75,7 +75,7 @@ val almacenPrendas = mutableListOf<Prenda>()
 /**
  * Muestra el menú principal de opciones al usuario
  */
-fun mostrarMenu() {
+fun mostrarMenucito() {
     println("\n" + "=".repeat(40))
     println("    OTAKUWEAR - GESTIÓN DE INVENTARIO")
     println("=".repeat(40))
